@@ -1,5 +1,6 @@
 using System;
 using Server.Targeting;
+using Server.Items;
 
 namespace Server.Spells.Seventh
 {
@@ -80,12 +81,15 @@ namespace Server.Spells.Seventh
                     Effects.SendLocationParticles(m, 0x3709, 10, 30, 5052);
                     Effects.PlaySound(m.Location, m.Map, 0x208);
                 }
-
-                if (damage > 0)
-                {
-                    SpellHelper.Damage(this, m, damage, 0, 100, 0, 0, 0);
-                }
-            }
+				
+				if(ItemExtension.HasEquipped(this.Caster, typeof(StaffOfTheMagiplus))){
+				SpellHelper.Damage(this, m, damage, 0, 0, 0, 0, 0, 0, 100);
+				}
+				else if (damage > 0){
+                SpellHelper.Damage(this, m, damage, 0, 100, 0, 0, 0);
+				}
+                
+             }
 
             this.FinishSequence();
         }

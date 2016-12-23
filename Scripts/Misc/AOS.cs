@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Server.Engines.XmlSpawner2;
 using Server.Items;
+using Server.Misc;
 using Server.Mobiles;
 using Server.Spells;
 using Server.Spells.Second;
@@ -123,7 +124,7 @@ namespace Server
 
             int totalDamage;
 
-            if (!ignoreArmor)
+            if (!ignoreArmor || ItemExtension.HasEquipped(from, typeof(DreadPirateHatplus)))
             {
                 int physDamage = damage * phys * (100 - damageable.PhysicalResistance);
                 int fireDamage = damage * fire * (100 - damageable.FireResistance);
@@ -267,6 +268,9 @@ namespace Server
                     }
                 }
             }
+			double armorredux = totalDamage;
+			armorredux *= ((100 - RegenRates.GetArmorOffset(m))/100);
+			totalDamage = (int)armorredux;
 
             m.Damage(totalDamage, from, true, false);
 
@@ -1159,9 +1163,189 @@ namespace Server
             {
                 this[AosAttribute.LowerAmmoCost] = value;
             }
-        }
+       }
     }
 
+
+	[Flags]
+    public enum AosCustomAttribute
+    {
+        HitFlamestrike = 0x00000001,
+		HitChainLightning = 0x00000002,
+		HitPoisonStrike = 0x00000004,
+		HitPoisonNova = 0x00000008,
+		HitHailstorm = 0x00000010,
+		HitArrowStorm = 0x00000020,
+		HitColdStrike = 0x00000040,
+		
+		
+   
+    }
+	public sealed class AosCustomAttributes : BaseAttributes
+    {
+	        public AosCustomAttributes(Item owner)
+            : base(owner)
+        {
+        }
+
+        public AosCustomAttributes(Item owner, AosCustomAttributes other)
+            : base(owner, other)
+        {
+        }
+
+        public AosCustomAttributes(Item owner, GenericReader reader)
+            : base(owner, reader)
+        {
+        }
+
+       public static int GetValue(Mobile m, AosCustomAttribute attribute)
+        {
+            if (!Core.AOS)
+                return 0;
+
+            List<Item> items = m.Items;
+            int value = 0;
+
+
+
+            for (int i = 0; i < items.Count; ++i)
+            {
+                Item obj = items[i];
+
+                if (obj is BaseWeapon)
+                {
+                    AosCustomAttributes attrs = ((BaseWeapon)obj).CustomAttributes;
+
+                    if (attrs != null)
+                        value += attrs[attribute];
+                }
+
+            }
+
+            return value;
+        }
+
+        public int this[AosCustomAttribute attribute]
+        {
+            get
+            {
+                return this.ExtendedGetValue((int)attribute);
+            }
+            set
+            {
+                this.SetValue((int)attribute, value);
+            }
+        }
+
+        public int ExtendedGetValue(int bitmask)
+        {
+            int value = this.GetValue(bitmask);
+
+            XmlAosAttributes xaos = (XmlAosAttributes)XmlAttach.FindAttachment(this.Owner, typeof(XmlAosAttributes));
+
+            if (xaos != null)
+            {
+                value += xaos.GetValue(bitmask);
+            }
+
+            return (value);
+        }
+
+        public override string ToString()
+        {
+            return "...";
+        }
+		
+			 [CommandProperty(AccessLevel.GameMaster)]
+        public int HitPoisonStrike
+        {
+            get
+            {
+                return this[AosCustomAttribute.HitPoisonStrike];
+            }
+            set
+            {
+                this[AosCustomAttribute.HitPoisonStrike] = value;
+            }
+        }
+		
+			 [CommandProperty(AccessLevel.GameMaster)]
+        public int HitPoisonNova
+        {
+            get
+            {
+                return this[AosCustomAttribute.HitPoisonNova];
+            }
+            set
+            {
+                this[AosCustomAttribute.HitPoisonNova] = value;
+            }
+        }
+		
+			 [CommandProperty(AccessLevel.GameMaster)]
+        public int HitHailstorm
+        {
+            get
+            {
+                return this[AosCustomAttribute.HitHailstorm];
+            }
+            set
+            {
+                this[AosCustomAttribute.HitHailstorm] = value;
+            }
+        }
+		
+			 [CommandProperty(AccessLevel.GameMaster)]
+        public int HitArrowStorm
+        {
+            get
+            {
+                return this[AosCustomAttribute.HitArrowStorm];
+            }
+            set
+            {
+                this[AosCustomAttribute.HitArrowStorm] = value;
+            }
+        }
+		
+			 [CommandProperty(AccessLevel.GameMaster)]
+        public int HitColdStrike
+        {
+            get
+            {
+                return this[AosCustomAttribute.HitColdStrike];
+            }
+            set
+            {
+                this[AosCustomAttribute.HitColdStrike] = value;
+            }
+        }
+	
+			 [CommandProperty(AccessLevel.GameMaster)]
+        public int HitFlamestrike
+        {
+            get
+            {
+                return this[AosCustomAttribute.HitFlamestrike];
+            }
+            set
+            {
+                this[AosCustomAttribute.HitFlamestrike] = value;
+            }
+        }
+ [CommandProperty(AccessLevel.GameMaster)]
+        public int HitChainLightning
+        {
+            get
+            {
+                return this[AosCustomAttribute.HitChainLightning];
+            }
+            set
+            {
+                this[AosCustomAttribute.HitChainLightning] = value;
+            }
+        }
+	}
     [Flags]
     public enum AosWeaponAttribute : long
     {
@@ -1971,7 +2155,7 @@ namespace Server
                     this.m_Mods = new List<SkillMod>();
 
                 SkillMod sk = new DefaultSkillMod(skill, true, bonus);
-                sk.ObeyCap = true;
+                sk.ObeyCap = false;
                 m.AddSkillMod(sk);
                 this.m_Mods.Add(sk);
             }
@@ -3027,7 +3211,7 @@ namespace Server
                 if ((ourNames & currentBit) != 0)
                     ++index;
 
-                if (currentBit == 0x80000000)
+                if (currentBit == 0x200000000)
                     return -1;
 
                 currentBit <<= 1;

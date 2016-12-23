@@ -635,6 +635,8 @@ namespace Server.Mobiles
 
         private bool m_HasGeneratedLoot; // have we generated our loot yet?
 
+		private bool m_Tyrant;
+		
         private bool m_Paragon;
 
         private string m_CorpseNameOverride;
@@ -648,6 +650,7 @@ namespace Server.Mobiles
 
         public int FollowRange { get; set; }
 
+		public virtual bool CanBeTyrant { get { return true; } }
         public virtual bool CanBeParagon { get { return true; } }
 
         /* Do not serialize this till the code is finalized */
@@ -694,7 +697,7 @@ namespace Server.Mobiles
         public const bool BondingEnabled = true;
 
         public virtual bool IsBondable { get { return (BondingEnabled && !Summoned); } }
-        public virtual TimeSpan BondingDelay { get { return TimeSpan.FromDays(7.0); } }
+        public virtual TimeSpan BondingDelay { get { return TimeSpan.FromDays(1.0); } }
         public virtual TimeSpan BondingAbandonDelay { get { return TimeSpan.FromDays(1.0); } }
 
         public override bool CanRegenHits { get { return !m_IsDeadPet && base.CanRegenHits; } }
@@ -926,6 +929,37 @@ namespace Server.Mobiles
                 InvalidateProperties();
             }
         }
+					[CommandProperty(AccessLevel.GameMaster)]
+
+		public bool IsTyrant
+		{
+
+			get { return m_Tyrant; }
+			set
+			{
+
+
+
+
+				if (m_Tyrant == value)
+				{
+					return;
+				}
+				else if (value)
+				{
+					XmlTyrant.Convert(this);
+				}
+				else
+				{
+					XmlTyrant.UnConvert(this);
+				}
+
+
+				m_Tyrant = value;
+
+				InvalidateProperties();
+			}
+		}
 
         [CommandProperty(AccessLevel.GameMaster)]
         public bool IsChampionSpawn
@@ -1169,11 +1203,17 @@ namespace Server.Mobiles
                 damage = (int)(damage / XmlParagon.GetHitsBuff(this));
             }
 
+			if (IsTyrant)
+			{
+				damage = (int)(damage / XmlTyrant.GetHitsBuff(this));
+			}
+			if (!IsTyrant)
+			{
             if (damage > 200)
             {
                 damage = 200;
             }
-
+			}
             return damage;
         }
         #endregion
@@ -1230,7 +1270,7 @@ namespace Server.Mobiles
         #endregion
 
         #region Flee!!!
-        public virtual bool CanFlee { get { return !m_Paragon; } }
+        public virtual bool CanFlee { get { return !m_Paragon && !m_Tyrant; } }
 
         private DateTime m_EndFlee;
 
@@ -1448,7 +1488,20 @@ namespace Server.Mobiles
 
                 XmlAttach.AttachTo(this, new XmlData("ParagonTitle", suffix));
             }
+			else if (IsTyrant)
+			{
+				if (suffix.Length == 0)
+				{
+					suffix = XmlTyrant.GetTyrantLabel(this);
+				}
+				else
+				{
+					suffix = String.Concat(suffix, " " + XmlTyrant.GetTyrantLabel(this));
+				}
 
+				XmlAttach.AttachTo(this, new XmlData("TyrantTitle", suffix));
+			}
+			
             return base.ApplyNameSuffix(suffix);
         }
 
@@ -1658,6 +1711,11 @@ namespace Server.Mobiles
 
         public override void OnBeforeSpawn(Point3D location, Map m)
         {
+			
+			if (XmlTyrant.CheckConvertTyrant(this, location, m))
+			{
+				IsTyrant = true;
+			}
             if (XmlParagon.CheckConvert(this, location, m))
             {
                 IsParagon = true;
@@ -1766,7 +1824,7 @@ namespace Server.Mobiles
             }
         }
 
-        public virtual bool HoldSmartSpawning { get { return IsParagon; } }
+        public virtual bool HoldSmartSpawning { get { return IsParagon && !m_Tyrant; } }
         public virtual bool UseSmartAI { get { return false; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
@@ -2391,7 +2449,7 @@ namespace Server.Mobiles
         {
             base.Serialize(writer);
 
-            writer.Write(21); // version
+            writer.Write(22); // version
 
             writer.Write((int)m_CurrentAI);
             writer.Write((int)m_DefaultAI);
@@ -2576,6 +2634,8 @@ namespace Server.Mobiles
 			writer.Write( (int) m_RoarAttack );
 			writer.Write( (int) m_PetPoisonAttack );
 			writer.Write( (int) m_FireBreathAttack );
+// Version 22
+			writer.Write(m_Tyrant);
         }
 
         private static readonly double[] m_StandardActiveSpeeds = new[] { 0.175, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.8 };
@@ -2803,12 +2863,12 @@ namespace Server.Mobiles
                 m_dCurrentSpeed = passiveSpeed;
             }
 
-            if (isStandardActive && !m_Paragon)
+            if (isStandardActive && !m_Paragon && !m_Tyrant)
             {
                 m_dActiveSpeed = activeSpeed;
             }
 
-            if (isStandardPassive && !m_Paragon)
+            if (isStandardPassive && !m_Paragon && !m_Tyrant)
             {
                 m_dPassiveSpeed = passiveSpeed;
             }
@@ -2908,6 +2968,14 @@ namespace Server.Mobiles
 			}
 			// FS ATS Ends
 
+			if (version >= 22)
+			{
+				m_Tyrant = reader.ReadBool();
+			}
+			else
+			{
+				m_Tyrant = false;
+			}
             if (version <= 14 && m_Paragon && Hue == 0x31)
             {
                 Hue = Paragon.Hue; //Paragon hue fixed, should now be 0x501.
@@ -3645,7 +3713,7 @@ namespace Server.Mobiles
         public double MinTameSkill { get { return m_dMinTameSkill; } set { m_dMinTameSkill = value; } }
 
         [CommandProperty(AccessLevel.GameMaster)]
-        public bool Tamable { get { return m_bTamable && !m_Paragon; } set { m_bTamable = value; } }
+        public bool Tamable { get { return m_bTamable && !m_Paragon && !m_Tyrant; } set { m_bTamable = value; } }
 
         [CommandProperty(AccessLevel.Administrator)]
         public bool Summoned
@@ -3733,6 +3801,11 @@ namespace Server.Mobiles
             {
                 p = xp.HitPoison;
             }
+			if (m_Tyrant)
+			{
+				p = PoisonImpl.IncreaseLevel(p);
+				p = PoisonImpl.IncreaseLevel(p);
+			}
 
             if (m_Paragon)
             {
@@ -5013,6 +5086,17 @@ namespace Server.Mobiles
 
             GenerateLoot();
 
+			if (m_Tyrant)
+			{
+				if (Fame < 10000)
+				{
+					AddLoot(LootPack.FilthyRich);
+				}
+				else
+				{
+					AddLoot(LootPack.UltraRich);
+				}
+			}
             if (m_Paragon)
             {
                 if (Fame < 1250)
@@ -6002,6 +6086,11 @@ namespace Server.Mobiles
             {
                 XmlParagon.GiveArtifactTo(mob, this);
             }
+			
+			if (m_Tyrant && XmlTyrant.CheckArtifactChance(mob, this))
+			{
+				XmlTyrant.GiveArtifactTo(mob, this);
+			}
 
             #region Mondain's Legacy
             if (GivesMLMinorArtifact)
@@ -6205,6 +6294,13 @@ namespace Server.Mobiles
                             givenVASKill = true;
                             VirtueArtifactsSystem.HandleKill(this, ds.m_Mobile);
                         }
+						
+						if (this is Harrower || this is PrimevalLich || this is AbyssalInfernal || this is Ilhenir || this is Meraktus || this is Twaulo || this is Serado || this is Barracoon || this is Silvani || this is LordOaks || this is Mephitis  || this is Semidar || this is Neira || this is Rikktor);
+						{
+
+						
+										Harrower.HandleKill(this, ds.m_Mobile);
+						}
                         if (region.IsPartOf("Doom Gauntlet") || region.Name == "GauntletRegion")
                         {
                             DemonKnight.HandleKill(this, ds.m_Mobile);
@@ -6263,7 +6359,7 @@ namespace Server.Mobiles
 
         public virtual TimeSpan ReacquireDelay { get { return TimeSpan.FromSeconds(10.0); } }
         public virtual bool ReacquireOnMovement { get { return false; } }
-        public virtual bool AcquireOnApproach { get { return m_Paragon; } }
+        public virtual bool AcquireOnApproach { get { return m_Paragon && !m_Tyrant; } }
         public virtual int AcquireOnApproachRange { get { return 10; } }
 
         public override void OnDelete()
@@ -6473,7 +6569,7 @@ namespace Server.Mobiles
 
         private static bool EnableRummaging = true;
 
-        private const double ChanceToRummage = 0.5; // 50%
+        private const double ChanceToRummage = 0.0; // 50%
 
         private const double MinutesToNextRummageMin = 1.0;
         private const double MinutesToNextRummageMax = 4.0;
@@ -7476,7 +7572,7 @@ namespace Server.Mobiles
                 {
                     BaseCreature t = (BaseCreature)target;
 
-                    if (t.Unprovokable || (t.IsParagon && BaseInstrument.GetBaseDifficulty(t) >= 160.0))
+                    if (t.Unprovokable)
                     {
                         return;
                     }
@@ -7814,8 +7910,13 @@ namespace Server.Mobiles
 
                                 if (c.Loyalty <= 0)
                                 {
-                                    toRelease.Add(c);
-                                }
+	//marschange
+									if (c.IsBonded == false)
+									{
+									toRelease.Add(c);
+									}
+									//marschange
+								}
                             }
                         }
 

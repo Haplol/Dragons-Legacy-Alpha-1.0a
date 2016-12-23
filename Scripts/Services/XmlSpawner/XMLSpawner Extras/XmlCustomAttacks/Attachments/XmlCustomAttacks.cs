@@ -53,7 +53,8 @@ namespace Server.Engines.XmlSpawner2
             ParalyzingFear,
             GiftOfHealth,
             VortexStrike,
-            PuffOfSmoke
+            PuffOfSmoke,			
+			SnipingShot
         }
 
         public static new void Initialize()
@@ -66,12 +67,13 @@ namespace Server.Engines.XmlSpawner2
 
             AddSpecialAttack("Triple Slash", "Deals triple the max damage of the weapon",        // attack name, and description
                 SpecialAttacks.TripleSlash, 0x520C, TimeSpan.FromSeconds(3.5),                   // attack id, id of gump icon, and chaining time
-                30, 20, 5, 0,                                                                    // mana, stam, hits, karma usage
+				50, 20, 0, 0,                                                                    // mana, stam, hits, karma usage
+
                 70,30,0,                                                                        // str, dex, int requirements
-                new SkillName [] { SkillName.ArmsLore },                                        //  skill requirement list
-                new int [] { 50 },                                                               // minimum skill levels
-                new Type [] {typeof(MandrakeRoot)},                                              // reagent list
-                new int [] { 1 }                                                                 // reagent quantities
+                new SkillName [] { SkillName.Swords},                                        //  skill requirement list
+                new int [] { 120 },                                                               // minimum skill levels
+                new Type [] {},                                              // reagent list
+                new int [] {}                                                                   // reagent quantities
             );
 
             AddSpecialAttack("Mind Drain", "Drains mana from the target",
@@ -133,7 +135,15 @@ namespace Server.Engines.XmlSpawner2
                 new Type [] {typeof(SpidersSilk)},
                 new int [] { 2 }
             );
-
+			AddSpecialAttack("Sniping Shot", "Deals Massive Damage",        // attack name, and description
+                SpecialAttacks.SnipingShot, 0x520C, TimeSpan.FromSeconds(6),                   // attack id, id of gump icon, and chaining time
+                100, 50, 0, 0,                                                                    // mana, stam, hits, karma usage
+                70,30,0,                                                                        // str, dex, int requirements
+                new SkillName [] { SkillName.Archery },                                        //  skill requirement list
+                new int [] { 120 },                                                               // minimum skill levels
+                new Type [] {},                                              // reagent list
+                new int [] {}                                                                 // reagent quantities
+            );
 
             //
             // define combos and the sequence of special attacks needed to activate them
@@ -193,9 +203,14 @@ namespace Server.Engines.XmlSpawner2
             // apply the special attack
             switch(special.AttackID)
             {
+				case SpecialAttacks.SnipingShot:
+                {
+                    defender.Damage( weapon.MaxDamage*20, attacker );
+                    break;
+                }
                 case SpecialAttacks.TripleSlash:
                 {
-                    defender.Damage( weapon.MaxDamage*3, attacker );
+                    defender.Damage( weapon.MaxDamage*6, attacker );
                     break;
                 }
                 case SpecialAttacks.MindDrain:
@@ -843,7 +858,7 @@ namespace Server.Engines.XmlSpawner2
             return msg;
 		}
 
-		public override void OnAttach()
+		/*public override void OnAttach()
 		{
             base.OnAttach();
 
@@ -852,7 +867,7 @@ namespace Server.Engines.XmlSpawner2
             {
                 Delete();
             }
-        }
+        }*/
 		
 		public void DoComboTimer(Mobile from, TimeSpan delay)
         {

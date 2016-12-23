@@ -143,6 +143,7 @@ namespace Server.Items
         private bool m_Altered;
 
         private AosAttributes m_AosAttributes;
+		private AosCustomAttributes m_AosCustomAttributes;
 		private AosWeaponAttributes m_AosWeaponAttributes;
 		private AosSkillBonuses m_AosSkillBonuses;
 		private AosElementAttributes m_AosElementDamages;
@@ -289,6 +290,9 @@ namespace Server.Items
 		[CommandProperty(AccessLevel.GameMaster)]
 		public AosAttributes Attributes { get { return m_AosAttributes; } set { } }
 
+		[CommandProperty(AccessLevel.GameMaster)]
+		public AosCustomAttributes CustomAttributes { get { return m_AosCustomAttributes; } set { } }
+		
 		[CommandProperty(AccessLevel.GameMaster)]
 		public AosWeaponAttributes WeaponAttributes { get { return m_AosWeaponAttributes; } set { } }
 
@@ -1408,7 +1412,16 @@ namespace Server.Items
 				}
 
 				// Swing speed currently capped at one swing every 1.25 seconds (5 ticks).
-				if (ticks < 5)
+				if((ticks < 24) && 	ItemExtension.HasEquipped(m, typeof(NoxRangersHeavyCrossbowplus)))
+				{
+					ticks = 24;
+				}
+
+				else if ((ticks < 3) && (ItemExtension.HasEquipped(m, typeof(PeasantsBokutoplus)) || ItemExtension.HasEquipped(m, typeof(TheBerserkersMaulplus)) || ItemExtension.HasEquipped(m, typeof(Windsongplus)) || ItemExtension.HasEquipped(m, typeof(AnimatedLegsoftheInsaneTinkerplus))))
+				{
+					ticks = 3;
+				}
+				else if (ticks < 5)
 				{
 					ticks = 5;
 				}
@@ -1602,7 +1615,7 @@ namespace Server.Items
 
 			if (shield != null)
 			{
-				double chance = (parry - bushidoNonRacial) / 400.0;
+				double chance = (parry) / 400.0;
 					// As per OSI, no negitive effect from the Racial stuffs, ie, 120 parry and '0' bushido with humans
 
 				if (chance < 0) // chance shouldn't go below 0
@@ -1611,11 +1624,15 @@ namespace Server.Items
 				}
 
 				// Parry/Bushido over 100 grants a 5% bonus.
-				if (parry >= 100.0 || bushido >= 100.0)
+				if (parry >= 120.0)
 				{
 					chance += 0.05;
 				}
-
+				
+				if (bushido >= 120.0)
+				{
+					chance += 0.05;
+				}
 				// Evasion grants a variable bonus post ML. 50% prior.
 				if (Evasion.IsEvading(defender))
 				{
@@ -2291,9 +2308,14 @@ namespace Server.Items
 				}
 			}
 			#endregion
+			if (ItemExtension.HasEquipped(attacker, typeof(GauntletsOfAngerplus)))
+			{
+			percentageBonus = Math.Min(percentageBonus, 500);	
+			}
+			else {
 
 			percentageBonus = Math.Min(percentageBonus, 300);
-
+			}
 			damage = AOS.Scale(damage, 100 + percentageBonus);
 			#endregion
 
@@ -2582,6 +2604,17 @@ namespace Server.Items
 				int fireballChance = (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitFireball) * propertyBonus);
 				int lightningChance = (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitLightning) * propertyBonus);
 				int dispelChance = (int)(AosWeaponAttributes.GetValue(attacker, AosWeaponAttribute.HitDispel) * propertyBonus);
+				//CustomSkills
+				int ChainLightningChance = (int)(AosCustomAttributes.GetValue(attacker, AosCustomAttribute.HitChainLightning) * propertyBonus);
+				int flamestrikeChance = (int)(AosCustomAttributes.GetValue(attacker, AosCustomAttribute.HitFlamestrike) * propertyBonus);
+				int PoisonStrikeChance = (int)(AosCustomAttributes.GetValue(attacker, AosCustomAttribute.HitPoisonStrike) * propertyBonus);
+				int PoisonNovaChance = (int)(AosCustomAttributes.GetValue(attacker, AosCustomAttribute.HitPoisonNova) * propertyBonus);
+				int HailstormChance = (int)(AosCustomAttributes.GetValue(attacker, AosCustomAttribute.HitHailstorm) * propertyBonus);
+				int ArrowStormChance = (int)(AosCustomAttributes.GetValue(attacker, AosCustomAttribute.HitArrowStorm) * propertyBonus);
+				int ColdStrikeChance = (int)(AosCustomAttributes.GetValue(attacker, AosCustomAttribute.HitColdStrike) * propertyBonus);
+				
+				
+				//CustomSkillsEnd
 
 				#region Stygian Abyss
 				int curseChance = (int)(m_AosWeaponAttributes.HitCurse * propertyBonus);
@@ -2589,6 +2622,35 @@ namespace Server.Items
 				int manadrainChance = (int)(m_AosWeaponAttributes.HitManaDrain * propertyBonus);
 				#endregion
 
+	if (ChainLightningChance != 0 && ChainLightningChance > Utility.Random(100))
+				{
+					DoChainLightning(attacker, defender, 0x0FC, 0, 0, 0, 0, 0, 100);
+				}
+				if (PoisonStrikeChance != 0 && PoisonStrikeChance > Utility.Random(100))
+				{
+					DoPoisonStrike(attacker, defender, 0x0FC, 0, 0, 0, 0, 100, 0);
+				}
+				if (PoisonNovaChance != 0 && PoisonNovaChance > Utility.Random(100))
+				{
+					DoPoisonNova(attacker, defender, 0x0FC, 0, 0, 0, 0, 100, 0);
+				}
+				if (HailstormChance != 0 && HailstormChance > Utility.Random(100))
+				{
+					DoHailstorm(attacker, defender, 0x0FC, 0, 0, 0, 100, 0, 0);
+				}
+				if (ArrowStormChance != 0 && ArrowStormChance > Utility.Random(100))
+				{
+					DoArrowStorm(attacker, defender, 0x0FC, 0, 100, 0, 0, 0, 100);
+				}
+				if (ColdStrikeChance != 0 && ColdStrikeChance > Utility.Random(100))
+				{
+					DoColdStrike(attacker, defender);
+				}
+
+				if (flamestrikeChance != 0 && flamestrikeChance > Utility.Random(100))
+				{
+					DoFlamestrike(attacker, defender);
+				}
 				if (maChance != 0 && maChance > Utility.Random(100))
 				{
 					DoMagicArrow(attacker, defender);
@@ -2740,6 +2802,246 @@ namespace Server.Items
 		}
 
 		#region Do<AoSEffect>
+	//Customskills
+				public virtual void DoChainLightning(
+			Mobile from, Mobile defender, int sound, int hue, int phys, int fire, int cold, int pois, int nrgy)
+		{
+			Map map = from.Map;
+
+			if (map == null)
+			{
+				return;
+			}
+
+			var list = new List<Mobile>();
+
+			foreach (Mobile m in defender.GetMobilesInRange(5))
+			{
+				if (from != m && defender != m && SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false) &&
+					(!Core.ML || from.InLOS(m)))
+				{
+					list.Add(m);
+				}
+			}
+
+			if (list.Count == 0)
+			{
+				return;
+			}
+
+			Effects.PlaySound(from.Location, map, sound);
+
+			// TODO: What is the damage calculation?
+
+			for (int i = 0; i < list.Count; ++i)
+			{
+				Mobile m = list[i];
+
+				
+				from.DoHarmful(m, true);
+				m.BoltEffect(0);
+				double damage = GetAosDamage(from, 30, 10, 4);
+				SpellHelper.Damage(TimeSpan.FromSeconds(0.0), m, from, damage, 0, 0, 0, 0, 100);
+			}
+		}		
+		public virtual void DoPoisonStrike(
+			Mobile from, Mobile defender, int sound, int hue, int phys, int fire, int cold, int pois, int nrgy)
+		{
+			Map map = from.Map;
+
+			if (map == null)
+			{
+				return;
+			}
+
+			var list = new List<Mobile>();
+
+			foreach (Mobile m in defender.GetMobilesInRange(5))
+			{
+				if (from != m && defender != m && SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false) &&
+					(!Core.ML || from.InLOS(m)))
+				{
+					list.Add(m);
+				}
+			}
+
+			if (list.Count == 0)
+			{
+				return;
+			}
+
+			Effects.PlaySound(from.Location, map, sound);
+
+			// TODO: What is the damage calculation?
+
+			for (int i = 0; i < list.Count; ++i)
+			{
+				Mobile m = list[i];
+
+				
+				from.DoHarmful(m, true);
+				Effects.SendLocationParticles(EffectItem.Create(m.Location, m.Map, EffectItem.DefaultDuration), 0x36B0, 1, 14, 63, 7, 9915, 0);
+                Effects.PlaySound(m.Location, m.Map, 0x229);
+				double damage = GetAosDamage(from, 80, 3, 4);
+				SpellHelper.Damage(TimeSpan.FromSeconds(0.0), m, from, damage, 0, 0, 0, 100, 0);
+			}
+		}
+			public virtual void DoPoisonNova(
+			Mobile from, Mobile defender, int sound, int hue, int phys, int fire, int cold, int pois, int nrgy)
+		{
+			Map map = from.Map;
+
+			if (map == null)
+			{
+				return;
+			}
+
+			var list = new List<Mobile>();
+
+			foreach (Mobile m in defender.GetMobilesInRange(15))
+			{
+				if (from != m && defender != m && SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false) &&
+					(!Core.ML || from.InLOS(m)))
+				{
+					list.Add(m);
+				}
+			}
+
+			if (list.Count == 0)
+			{
+				return;
+			}
+
+			Effects.PlaySound(from.Location, map, sound);
+
+			// TODO: What is the damage calculation?
+
+			for (int i = 0; i < list.Count; ++i)
+			{
+				Mobile m = list[i];
+
+				
+				from.DoHarmful(m, true);
+				m.BoltEffect(0);
+				double damage = GetAosDamage(from, 20, 5, 4);
+				SpellHelper.Damage(TimeSpan.FromSeconds(1.0), m, from, damage, 0, 0, 0, 100, 0);
+			}
+		}
+			public virtual void DoHailstorm(
+			Mobile from, Mobile defender, int sound, int hue, int phys, int fire, int cold, int pois, int nrgy)
+		{
+			Map map = from.Map;
+
+			if (map == null)
+			{
+				return;
+			}
+
+			var list = new List<Mobile>();
+
+			foreach (Mobile m in defender.GetMobilesInRange(5))
+			{
+				if (from != m && defender != m && SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false) &&
+					(!Core.ML || from.InLOS(m)))
+				{
+					list.Add(m);
+				}
+			}
+
+			if (list.Count == 0)
+			{
+				return;
+			}
+
+			Effects.PlaySound(from.Location, map, sound);
+
+			// TODO: What is the damage calculation?
+
+			for (int i = 0; i < list.Count; ++i)
+			{
+				Mobile m = list[i];
+
+				
+				from.DoHarmful(m, true);
+				from.MovingParticles(m, 0x36D4, 10, 0, false, true, 101, 0x0, 9501, 1, 0, 0x100);
+				double damage = GetAosDamage(from, 100, 1, 10);
+				SpellHelper.Damage(TimeSpan.FromSeconds(0.5), m, from, damage, 0, 0, 100, 0, 0);
+			}
+		}
+		public virtual void DoArrowStorm(
+			Mobile from, Mobile defender, int sound, int hue, int phys, int fire, int cold, int pois, int nrgy)
+		{
+			Map map = from.Map;
+
+			if (map == null)
+			{
+				return;
+			}
+
+			var list = new List<Mobile>();
+
+			foreach (Mobile m in defender.GetMobilesInRange(5))
+			{
+				if (from != m && defender != m && SpellHelper.ValidIndirectTarget(from, m) && from.CanBeHarmful(m, false) &&
+					(!Core.ML || from.InLOS(m)))
+				{
+					list.Add(m);
+				}
+			}
+
+			if (list.Count == 0)
+			{
+				return;
+			}
+
+			Effects.PlaySound(from.Location, map, sound);
+
+			// TODO: What is the damage calculation?
+
+			for (int i = 0; i < list.Count; ++i)
+			{
+				Mobile m = list[i];
+
+				
+				from.DoHarmful(m, true);
+				from.MovingParticles(m, 0xF42, 5, 0, false, false, 3006, 4006, 0);
+				double damage = GetAosDamage(from, 30, 1, 4);
+				SpellHelper.Damage(TimeSpan.FromSeconds(1.0), m, from, damage, 100, 0, 0, 0, 0);
+			}
+		}
+		public virtual void DoColdStrike(Mobile attacker, Mobile defender)
+		{
+			if (!attacker.CanBeHarmful(defender, false))
+			{
+				return;
+			}
+
+			attacker.DoHarmful(defender);
+
+			double damage = GetAosDamage(attacker, 90, 10, 5);
+
+            defender.FixedParticles(0x3709, 10, 30, 5052, 101, 40, EffectLayer.LeftFoot);
+            attacker.PlaySound(0x208);
+
+			SpellHelper.Damage(TimeSpan.FromSeconds(1.0), defender, attacker, damage, 0, 0, 100, 0, 0);
+		}
+		//Customskillsend
+		public virtual void DoFlamestrike(Mobile attacker, Mobile defender)
+		{
+			if (!attacker.CanBeHarmful(defender, false))
+			{
+				return;
+			}
+
+			attacker.DoHarmful(defender);
+
+			double damage = GetAosDamage(attacker, 90, 10, 5);
+
+            defender.FixedParticles(0x3709, 10, 30, 5052, EffectLayer.LeftFoot);
+            attacker.PlaySound(0x208);
+
+			SpellHelper.Damage(TimeSpan.FromSeconds(1.0), defender, attacker, damage, 0, 100, 0, 0, 0);
+		}
 		public virtual void DoMagicArrow(Mobile attacker, Mobile defender)
 		{
 			if (!attacker.CanBeHarmful(defender, false))
@@ -3306,7 +3608,7 @@ namespace Server.Items
 
 				if (Type == WeaponType.Axe)
 				{
-					attacker.CheckSkill(SkillName.Lumberjacking, 0.0, 100.0); // Passively check Lumberjacking for gain
+					attacker.CheckSkill(SkillName.Lumberjacking, 0.0, 120.0); // Passively check Lumberjacking for gain
 				}
 			}
 
@@ -3827,7 +4129,12 @@ namespace Server.Items
 			{
 				writer.Write((int)m_Resource);
 			}
-
+			
+			if (GetSaveFlag(flags, SaveFlag.xCustomAttributes))
+			{
+				m_AosCustomAttributes.Serialize(writer);
+			}
+			
 			if (GetSaveFlag(flags, SaveFlag.xAttributes))
 			{
 				m_AosAttributes.Serialize(writer);
@@ -3908,7 +4215,8 @@ namespace Server.Items
 			EngravedText = 0x40000000,
 			xAbsorptionAttributes = 0x80000000,
             xNegativeAttributes = 0x100000000,
-            Altered = 0x200000000
+			xCustomAttributes = 0x200000000,
+            Altered = 0x400000000
         }
 
 		#region Mondain's Legacy Sets
@@ -4246,6 +4554,15 @@ namespace Server.Items
 						{
 							m_Resource = CraftResource.Iron;
 						}
+	
+						if (GetSaveFlag(flags, SaveFlag.xCustomAttributes))
+						{
+							m_AosCustomAttributes = new AosCustomAttributes(this, reader);
+						}
+						else
+						{
+							m_AosCustomAttributes = new AosCustomAttributes(this);
+						}
 
 						if (GetSaveFlag(flags, SaveFlag.xAttributes))
 						{
@@ -4570,7 +4887,7 @@ namespace Server.Items
 			m_Hits = m_MaxHits = Utility.RandomMinMax(InitMinHits, InitMaxHits);
 
 			m_Resource = CraftResource.Iron;
-
+			m_AosCustomAttributes = new AosCustomAttributes(this);
 			m_AosAttributes = new AosAttributes(this);
 			m_AosWeaponAttributes = new AosWeaponAttributes(this);
 			m_AosSkillBonuses = new AosSkillBonuses(this);
@@ -5040,6 +5357,34 @@ namespace Server.Items
                 list.Add(1060420, ((int)((double)enchantBonus * focusBonus)).ToString()); // hit fireball ~1_val~%
             }
 
+     if ((fprop = (double)m_AosCustomAttributes.HitFlamestrike * focusBonus) != 0)
+            {
+                list.Add("Hit Flamestrike 50% chance"); // hit fireball ~1_val~%
+            }
+            if ((fprop = (double)m_AosCustomAttributes.HitChainLightning * focusBonus) != 0)
+            {
+                list.Add("Hit Chain Lightning 25%"); // hit lightning ~1_val~%
+            }
+			if ((fprop = (double)m_AosCustomAttributes.HitPoisonStrike * focusBonus) != 0)
+            {
+                list.Add("Hit Poisonstrike 50%"); // hit lightning ~1_val~%
+            }
+			            if ((fprop = (double)m_AosCustomAttributes.HitPoisonNova * focusBonus) != 0)
+            {
+                list.Add("Desc"); // hit lightning ~1_val~%
+            }
+			 if ((fprop = (double)m_AosCustomAttributes.HitHailstorm * focusBonus) != 0)
+            {
+                list.Add("Hit Hailstorm 50%"); // hit lightning ~1_val~%
+            }
+			            if ((fprop = (double)m_AosCustomAttributes.HitArrowStorm * focusBonus) != 0)
+            {
+                list.Add("Desc"); // hit lightning ~1_val~%
+            }
+			            if ((fprop = (double)m_AosCustomAttributes.HitColdStrike * focusBonus) != 0)
+            {
+                list.Add("Desc"); // hit lightning ~1_val~%
+            }
             if ((fprop = (double)m_AosWeaponAttributes.HitHarm * focusBonus) != 0)
 			{
 				list.Add(1060421, ((int)fprop).ToString()); // hit harm ~1_val~%

@@ -62,7 +62,7 @@ namespace Server.Mobiles
         {
             get
             {
-                return new Type[] { typeof(GladiatorsCollar) };
+                return new Type[] { typeof(AnimatedLegsoftheInsaneTinkerplus), typeof(GladiatorsCollar) };
             }
         }
         public override Type[] SharedList

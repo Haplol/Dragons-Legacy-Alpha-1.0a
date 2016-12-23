@@ -289,7 +289,11 @@ namespace Server.Mobiles
 
 		#region Guantlet Points
 		private double m_GauntletPoints;
-
+		private double m_ChampionPoints;
+		
+		[CommandProperty(AccessLevel.Administrator)]
+		public double ChampionPoints { get { return m_ChampionPoints; } set { m_ChampionPoints = value; } }
+	
 		[CommandProperty(AccessLevel.Administrator)]
 		public double GauntletPoints { get { return m_GauntletPoints; } set { m_GauntletPoints = value; } }
 		#endregion
@@ -846,12 +850,16 @@ namespace Server.Mobiles
 
             max += BaseArmor.GetRefinedResist(this, type);
 
-            if (type != ResistanceType.Physical && 60 < max && Spells.Fourth.CurseSpell.UnderEffect(this))
-                max = 60;
+            if (type != ResistanceType.Physical && 50 < max && Spells.Fourth.CurseSpell.UnderEffect(this))
+                max = 50;
 
             if (Core.ML && this.Race == Race.Elf && type == ResistanceType.Energy)
                 max += 5; //Intended to go after the 60 max from curse
-
+			if (ItemExtension.HasEquipped(this, typeof(HeartOfTheLionplus)))
+			{	
+				max += 5;
+			}
+			max -= 10;
             return max;
         }
 
@@ -1666,10 +1674,10 @@ namespace Server.Mobiles
 					strBase = Str; //this.Str already includes GetStatOffset/str
 					strOffs = AosAttributes.GetValue(this, AosAttribute.BonusHits);
 
-					if (Core.ML && strOffs > 25 && IsPlayer())
+					/*if (Core.ML && strOffs > 25 && IsPlayer())
 					{
 						strOffs = 25;
-					}
+					}*/
 
 					if (AnimalForm.UnderTransformation(this, typeof(BakeKitsune)) ||
 						AnimalForm.UnderTransformation(this, typeof(GreyWolf)))
@@ -1705,7 +1713,7 @@ namespace Server.Mobiles
 			{
 				if (Core.ML && IsPlayer())
 				{
-					return Math.Min(base.Str, 150);
+					return Math.Min(base.Str, 300);
 				}
 
 				return base.Str;
@@ -1720,7 +1728,7 @@ namespace Server.Mobiles
 			{
 				if (Core.ML && IsPlayer())
 				{
-					return Math.Min(base.Int, 150);
+					return Math.Min(base.Int, 300);
 				}
 
 				return base.Int;
@@ -1735,7 +1743,7 @@ namespace Server.Mobiles
 			{
 				if (Core.ML && IsPlayer())
 				{
-					return Math.Min(base.Dex, 150);
+					return Math.Min(base.Dex, 300);
 				}
 
 				return base.Dex;
@@ -3739,7 +3747,13 @@ namespace Server.Mobiles
             {
                 return ApplyPoisonResult.Immune;
             }
-
+			
+			if (ItemExtension.HasEquipped(this, typeof(RingOfTheVileplus)))
+			{
+				this.SendMessage( "Your Ring Of The Vile absorbs the poisons." );
+				return ApplyPoisonResult.Immune;
+			}
+		
 			if (EvilOmenSpell.TryEndEffect(this))
 			{
 				poison = PoisonImpl.IncreaseLevel(poison);
@@ -3909,17 +3923,21 @@ namespace Server.Mobiles
 				}
                 case 34:
 				{
-					m_Bioenginer = reader.ReadBool();
+					
 					NextTamingBulkOrder = reader.ReadTimeSpan();
 					goto case 33;
 				}
-                case 33:
+                case 33: m_Bioenginer = reader.ReadBool();
 					{
                         NextFletcherBulkOrder = reader.ReadTimeSpan();
                         NextCarpenterBulkOrder = reader.ReadTimeSpan();
 						goto case 32;
 					}
-                case 32: goto case 31;
+                case 32: 
+				{
+					m_ChampionPoints = reader.ReadDouble();
+				goto case 31;
+				}
 				case 31:
                     {
                         m_ShowGuildAbbreviation = version > 31 ? reader.ReadBool() : false;
@@ -4359,6 +4377,7 @@ namespace Server.Mobiles
 			// Version 34 FS:ATS
 			writer.Write( m_Bioenginer );
 			writer.Write( NextTamingBulkOrder );
+			writer.Write(m_ChampionPoints);
 			
 			//Version 33 
 			writer.Write(NextFletcherBulkOrder);

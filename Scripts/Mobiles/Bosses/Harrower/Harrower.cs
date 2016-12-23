@@ -8,6 +8,30 @@ namespace Server.Mobiles
 {
     public class Harrower : BaseCreature
     {
+ private static readonly Type[] m_ChampionArtifact = new Type[]
+        {
+            typeof(ArcaneShieldplus),
+            typeof(TheTaskmasterplus),
+            typeof(ArmorOfFortuneplus),
+            typeof(HolyKnightsBreastplateplus),
+            typeof(JackalsCollarplus),
+            typeof(LeggingsOfBaneplus),
+            typeof(TunicOfFireplus),
+            typeof(RingOfTheElementsplus),
+            typeof(BladeOfInsanityplus),
+            typeof(BoneCrusherplus),
+            typeof(Frostbringerplus),
+            typeof(SerpentsFangplus),
+            typeof(StaffOfTheMagiplus),
+            typeof(TheBerserkersMaulplus),
+            typeof(TheDryadBowplus),
+            typeof(DivineCountenanceplus),
+            typeof(HuntersHeaddressplus),
+            typeof(SpiritOfTheTotemplus),
+			typeof(QuiverOfInfinityplus),
+			typeof(Windsongplus)
+			
+        };
         private int m_StatCap = Config.Get("PlayerCaps.TotalStatCap", 225);
         private static readonly SpawnEntry[] m_Entries = new SpawnEntry[]
         {
@@ -167,6 +191,66 @@ namespace Server.Mobiles
                 return this.m_TrueForm;
             }
         }
+		public static void HandleKill(Mobile victim, Mobile killer)
+		{
+	
+			PlayerMobile pm = killer as PlayerMobile;
+            BaseCreature bc = victim as BaseCreature;
+			
+
+           
+            bool boss = bc is Harrower || bc is PrimevalLich || bc is AbyssalInfernal || bc is Ilhenir || bc is Meraktus || bc is Twaulo || bc is Serado || bc is Barracoon || bc is Silvani || bc is LordOaks || bc is Mephitis  || bc is Semidar || bc is Neira || bc is Rikktor;
+            if (!boss)
+                return;
+             
+            double cpoints = pm.ChampionPoints;
+
+            pm.ChampionPoints += (int)(bc.Fame * (1 + Math.Sqrt(pm.Luck) / 20))/2;
+
+
+            const double A = 0.001263316841;
+            const double B = 0.00003225531915;
+
+            double chance = A * Math.Pow(10, B * cpoints);
+           
+
+            double roll = Utility.RandomDouble();
+
+            
+
+            if (chance > roll )
+            {
+				killer.PlaySound(0x5B4);
+                Item i = null;
+
+                try
+                {
+                    i = Activator.CreateInstance(m_ChampionArtifact[Utility.Random(m_ChampionArtifact.Length)]) as Item;
+                }
+                catch
+                {
+                }
+
+                if (i != null)
+                {
+                    pm.SendLocalizedMessage(1062317); // For your valor in combating the fallen beast, a special artifact has been bestowed on you.
+
+                    if (!pm.PlaceInBackpack(i))
+                    {
+                        if (pm.BankBox != null && pm.BankBox.TryDropItem(killer, i, false))
+                            pm.SendLocalizedMessage(1079730); // The item has been placed into your bank box.
+                        else
+                        {
+                            pm.SendLocalizedMessage(1072523); // You find an artifact, but your backpack and bank are too full to hold it.
+                            i.MoveToWorld(pm.Location, pm.Map);
+                        }
+                    }
+
+                    pm.ChampionPoints = 0;
+                }
+            }
+		}
+        
 
         public override bool TeleportsTo { get { return true; } }
 
