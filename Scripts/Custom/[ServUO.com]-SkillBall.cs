@@ -12,7 +12,7 @@ namespace Server
     {
 
 
-        private int switches = 5;
+        private int switches = 12;
         private SkillBall m_SkillBall;
         private double val = 100;
 

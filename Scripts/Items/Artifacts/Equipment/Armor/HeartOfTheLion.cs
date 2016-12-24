@@ -12,7 +12,6 @@ namespace Server.Items
             this.Attributes.Luck = 95;
             this.Attributes.DefendChance = 15;
             this.ArmorAttributes.LowerStatReq = 100;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public HeartOfTheLion(Serial serial)

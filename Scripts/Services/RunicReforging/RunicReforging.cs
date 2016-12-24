@@ -2229,10 +2229,10 @@ namespace Server.Items
             if (CheckEater(item, attr))
                 return true;
 
-            if (item is BaseArmor && !(item is BaseShield) && attr is AosArmorAttribute && (AosArmorAttribute)attr == AosArmorAttribute.MageArmor && ((BaseArmor)item).MeditationAllowance == ArmorMeditationAllowance.All)
+            if (item is BaseArmor && !(item is BaseShield) && attr is AosArmorAttribute && ((BaseArmor)item).MeditationAllowance == ArmorMeditationAllowance.All)
                 return true;
 
-            if (item is BaseClothing && attr is AosArmorAttribute && (AosArmorAttribute)attr == AosArmorAttribute.MageArmor)
+            if (item is BaseClothing && attr is AosArmorAttribute)
                 return true;
 
             if (item is BaseWeapon && attr is AosWeaponAttribute[] && (CheckHitSpell((BaseWeapon)item, attr) || (CheckHitArea((BaseWeapon)item, attr))))
@@ -2491,7 +2491,6 @@ namespace Server.Items
 			AosElementAttribute.Cold,
 			AosElementAttribute.Poison,
 			AosElementAttribute.Energy,
-            //AosArmorAttribute.MageArmor
 		};
 
         private static object[] m_HatStandard = new object[]

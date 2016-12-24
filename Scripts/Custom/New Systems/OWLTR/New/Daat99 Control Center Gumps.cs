@@ -117,10 +117,10 @@ namespace daat99
 			OWLTROptionsManager.GetOption(OWLTROptionsManager.OPTIONS_ENUM.UBBER_RESOURCES).AddToGump(this, 260, 35, b_ForStaff, OPTIONS_DIFF + (int)OWLTROptionsManager.OPTIONS_ENUM.UBBER_RESOURCES, true, true); 
 			
 			// mining
-			OWLTROptionsManager.GetOption(OWLTROptionsManager.OPTIONS_ENUM.DAAT99_MINING).AddToGump(this, 260, 175, b_ForStaff, OPTIONS_DIFF + (int)OWLTROptionsManager.OPTIONS_ENUM.DAAT99_MINING, true); 
+			OWLTROptionsManager.GetOption(OWLTROptionsManager.OPTIONS_ENUM.DAAT99_MINING).AddToGump(this, 260, 175, b_ForStaff, OPTIONS_DIFF + (int)OWLTROptionsManager.OPTIONS_ENUM.DAAT99_MINING, false); 
 
 			// lumberjacking
-			OWLTROptionsManager.GetOption(OWLTROptionsManager.OPTIONS_ENUM.DAAT99_LUMBERJACKING).AddToGump(this, 260, 325, b_ForStaff, OPTIONS_DIFF + (int)OWLTROptionsManager.OPTIONS_ENUM.DAAT99_LUMBERJACKING, true); 
+			OWLTROptionsManager.GetOption(OWLTROptionsManager.OPTIONS_ENUM.DAAT99_LUMBERJACKING).AddToGump(this, 260, 325, b_ForStaff, OPTIONS_DIFF + (int)OWLTROptionsManager.OPTIONS_ENUM.DAAT99_LUMBERJACKING, false); 
 			
 			AddPage( 3 );
 			//A_Li_N clean champ
@@ -158,7 +158,7 @@ namespace daat99
 			
 			AddPage( 7 );
 			//Harvest Give Tokens
-			OWLTROptionsManager.GetOption(OWLTROptionsManager.OPTIONS_ENUM.HARVEST_GIVE_TOKENS).AddToGump(this, 260, 35, b_ForStaff, OPTIONS_DIFF + (int)OWLTROptionsManager.OPTIONS_ENUM.HARVEST_GIVE_TOKENS, true);
+			OWLTROptionsManager.GetOption(OWLTROptionsManager.OPTIONS_ENUM.HARVEST_GIVE_TOKENS).AddToGump(this, 260, 35, b_ForStaff, OPTIONS_DIFF + (int)OWLTROptionsManager.OPTIONS_ENUM.HARVEST_GIVE_TOKENS, false);
 
 			//Craft Give Tokens 
 			OWLTROptionsManager.GetOption(OWLTROptionsManager.OPTIONS_ENUM.CRAFT_GIVE_TOKENS).AddToGump(this, 260, 255, b_ForStaff, OPTIONS_DIFF + (int)OWLTROptionsManager.OPTIONS_ENUM.CRAFT_GIVE_TOKENS, true); 

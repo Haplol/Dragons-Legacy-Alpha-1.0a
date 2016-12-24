@@ -327,11 +327,10 @@ namespace Server.Engines.Craft
                                 armor.Attributes.WeaponDamage += attributes.ArmorDamage;
                                 armor.Attributes.AttackChance += attributes.ArmorHitChance;
                                 armor.Attributes.RegenHits += attributes.ArmorRegenHits;
-                                //armor.ArmorAttributes.MageArmor += attributes.ArmorMage;
                             }
                             else
                             {
-                                switch (Utility.Random(5))
+                                switch (Utility.Random(4))
                                 {
                                     case 0:
                                         armor.Attributes.WeaponDamage += attributes.ArmorDamage;
@@ -340,12 +339,9 @@ namespace Server.Engines.Craft
                                         armor.Attributes.AttackChance += attributes.ArmorHitChance;
                                         break;
                                     case 2:
-                                        armor.ArmorAttributes.MageArmor += attributes.ArmorMage;
-                                        break;
-                                    case 3:
                                         armor.Attributes.Luck += attributes.ArmorLuck;
                                         break;
-                                    case 4:
+                                    case 3:
                                         armor.ArmorAttributes.LowerStatReq += attributes.ArmorLowerRequirements;
                                         break;
                                 }

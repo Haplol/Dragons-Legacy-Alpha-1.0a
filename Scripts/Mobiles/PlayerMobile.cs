@@ -298,24 +298,7 @@ namespace Server.Mobiles
 		public double GauntletPoints { get { return m_GauntletPoints; } set { m_GauntletPoints = value; } }
 		#endregion
 
-        #region Points System
-        private PointsSystemProps _PointsSystemProps;
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public PointsSystemProps PointSystems
-        {
-            get
-            {
-                if (_PointsSystemProps == null)
-                    _PointsSystemProps = new PointsSystemProps(this);
-
-                return _PointsSystemProps;
-            }
-            set
-            {
-            }
-        }
-        #endregion
 
         #region Getters & Setters
         public List<Mobile> RecentlyReported { get { return m_RecentlyReported; } set { m_RecentlyReported = value; } }
@@ -1654,7 +1637,7 @@ namespace Server.Mobiles
 		{
 			BaseArmor ar = armor as BaseArmor;
 
-			if (ar != null && (!Core.AOS || ar.ArmorAttributes.MageArmor == 0))
+			if (ar != null && (!Core.AOS))
 			{
 				rating += ar.ArmorRatingScaled;
 			}

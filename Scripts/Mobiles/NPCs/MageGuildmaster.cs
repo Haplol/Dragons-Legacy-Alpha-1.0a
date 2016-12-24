@@ -56,16 +56,15 @@ namespace Server.Mobiles
 		{
 			base.AddCustomContextEntries(from, list);
 
-			if(from != null)
-				list.Add(new UpgradeMageArmor(from, this));
+			
+				
 		}
 
         public static bool CanConvertArmor(BaseArmor armor)
         {
             if (armor.ArtifactRarity != 0)
                 return false;
-            if (armor.ArmorAttributes.MageArmor == 0 &&
-                Server.SkillHandlers.Imbuing.GetTotalMods(armor) > 4)
+            if (Server.SkillHandlers.Imbuing.GetTotalMods(armor) > 4)
                 return false;
             return true;
         }
@@ -213,55 +212,12 @@ namespace Server.Mobiles
 				if (!Armor.IsChildOf(From.Backpack))
 					return;
 
-                if (Armor.ArmorAttributes.MageArmor > 0)
-                    Armor.ArmorAttributes.MageArmor = 0;
-                else
-                    Armor.ArmorAttributes.MageArmor = 1;
+                
                 Armor.InvalidateProperties();
 
                 From.SendLocalizedMessage(1154118); // Your armor has been converted.
             }
         }
 
-		protected class UpgradeMageArmor : ContextMenuEntry
-		{
-			Mobile From;
-			MageGuildmaster GuildMaster;
-
-			public UpgradeMageArmor(Mobile from, MageGuildmaster gm)
-				: base(1154114) // Convert Mage Armor
-			{
-				From = from;
-				GuildMaster = gm;
-			}
-
-			public override void OnClick()
-			{
-				From.Target = new InternalTarget(From, GuildMaster);
-				From.SendLocalizedMessage(1154116); // Target a piece of armor to show to the guild master.
-			}
-
-			private class InternalTarget : Target
-			{
-				Mobile From;
-				MageGuildmaster GuildMaster;
-
-				public InternalTarget(Mobile from, MageGuildmaster gm)
-					: base(1, false, TargetFlags.None)
-				{
-					From = from;
-					GuildMaster = gm;
-				}
-
-				protected override void OnTarget(Mobile from, object targeted)
-				{
-					if (from == null || targeted == null || !(targeted is BaseArmor))
-						return;
-
-					BaseArmor armor = (BaseArmor)targeted;
-					GuildMaster.PlayerWantsToUpgrade(from, armor);
-				}
-			}
-		}
     }
 }

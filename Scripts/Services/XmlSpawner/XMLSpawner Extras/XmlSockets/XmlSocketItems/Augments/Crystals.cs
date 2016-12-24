@@ -46,11 +46,7 @@ namespace Server.Items
                 ((BaseShield)target).Attributes.SpellChanneling = 1;
 
 			} else
-            if(target is BaseArmor)
-            {
-                ((BaseArmor)target).ArmorAttributes.MageArmor = 1;
-            } else
-			{
+         			{
                 return false;
 			}
 
@@ -74,10 +70,7 @@ namespace Server.Items
                 ((BaseShield)target).Attributes.SpellChanneling = 0;
 
 			} else
-            if(target is BaseArmor)
-            {
-                ((BaseArmor)target).ArmorAttributes.MageArmor = 0;
-            } else
+           
 			{
                 return false;
 			}

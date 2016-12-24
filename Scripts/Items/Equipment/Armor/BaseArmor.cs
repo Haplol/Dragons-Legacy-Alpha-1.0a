@@ -542,7 +542,7 @@ namespace Server.Items
 
             foreach (BaseArmor armor in from.Items.OfType<BaseArmor>())
             {
-                if (armor.ArmorAttributes.MageArmor > 1 || armor is WoodlandArms || armor is WoodlandChest || armor is WoodlandGloves || armor is WoodlandLegs || armor is WoodlandGorget || armor is BaseShield)
+                if (armor is WoodlandArms || armor is WoodlandChest || armor is WoodlandGloves || armor is WoodlandLegs || armor is WoodlandGorget || armor is BaseShield)
                     continue;
 
                 if (armor.MaterialType == ArmorMaterialType.Studded || armor.MaterialType == ArmorMaterialType.Bone)
@@ -2737,9 +2737,6 @@ namespace Server.Items
 
             if ((prop = (this.GetLuckBonus() + this.m_AosAttributes.Luck)) != 0)
                 list.Add(1060436, prop.ToString()); // luck ~1_val~
-
-            if ((prop = this.m_AosArmorAttributes.MageArmor) != 0)
-                list.Add(1060437); // mage armor
 
             if ((prop = this.m_AosAttributes.BonusMana) != 0)
                 list.Add(1060439, prop.ToString()); // mana increase ~1_val~

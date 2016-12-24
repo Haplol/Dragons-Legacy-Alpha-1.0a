@@ -16,8 +16,7 @@ namespace Server.Items
             this.Attributes.RegenMana = 3;
             this.Attributes.LowerManaCost = 15;
             this.ArmorAttributes.LowerStatReq = 100;
-            this.ArmorAttributes.MageArmor = 1;
-        }
+       }
 
         public override int BasePhysicalResistance
         {

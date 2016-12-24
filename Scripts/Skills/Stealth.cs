@@ -60,8 +60,7 @@ namespace Server.SkillHandlers
                 if (materialType >= m_ArmorTable.GetLength(0) || bodyPosition >= m_ArmorTable.GetLength(1))
                     continue;
 
-                if (armor.ArmorAttributes.MageArmor == 0)
-                    ar += m_ArmorTable[materialType, bodyPosition];
+               
             }
 
             return ar;

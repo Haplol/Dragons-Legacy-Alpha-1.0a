@@ -1214,9 +1214,6 @@ namespace Server.Items
             if ((prop = this.m_AosAttributes.Luck) != 0)
                 list.Add(1060436, prop.ToString()); // luck ~1_val~
 
-            if ((prop = this.m_AosClothingAttributes.MageArmor) != 0)
-                list.Add(1060437); // mage armor
-
             if ((prop = this.m_AosAttributes.BonusMana) != 0)
                 list.Add(1060439, prop.ToString()); // mana increase ~1_val~
 

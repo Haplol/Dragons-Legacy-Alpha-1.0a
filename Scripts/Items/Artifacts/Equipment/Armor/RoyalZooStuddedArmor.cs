@@ -14,7 +14,6 @@ namespace Server.Items
             this.Attributes.BonusHits = 2;
             this.Attributes.BonusMana = 3;
             this.Attributes.LowerManaCost = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooStuddedLegs(Serial serial)
@@ -105,7 +104,6 @@ namespace Server.Items
             this.Attributes.BonusHits = 2;
             this.Attributes.BonusMana = 3;
             this.Attributes.LowerManaCost = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooStuddedGloves(Serial serial)
@@ -196,7 +194,6 @@ namespace Server.Items
             this.Attributes.BonusHits = 2;
             this.Attributes.BonusMana = 3;
             this.Attributes.LowerManaCost = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooStuddedGorget(Serial serial)
@@ -287,7 +284,6 @@ namespace Server.Items
             this.Attributes.BonusHits = 2;
             this.Attributes.BonusMana = 3;
             this.Attributes.LowerManaCost = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooStuddedArms(Serial serial)
@@ -378,7 +374,6 @@ namespace Server.Items
             this.Attributes.BonusHits = 2;
             this.Attributes.BonusMana = 3;
             this.Attributes.LowerManaCost = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooStuddedChest(Serial serial)
@@ -469,7 +464,6 @@ namespace Server.Items
             this.Attributes.BonusHits = 2;
             this.Attributes.BonusMana = 3;
             this.Attributes.LowerManaCost = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooStuddedFemaleChest(Serial serial)

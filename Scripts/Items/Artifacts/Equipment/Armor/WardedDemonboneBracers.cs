@@ -26,7 +26,6 @@ namespace Server.Items
             Attributes.RegenMana = 1;
             Attributes.LowerManaCost = 6;
             Attributes.LowerRegCost = 12;
-            ArmorAttributes.MageArmor = 1;
         }
 
         public WardedDemonboneBracers(Serial serial)

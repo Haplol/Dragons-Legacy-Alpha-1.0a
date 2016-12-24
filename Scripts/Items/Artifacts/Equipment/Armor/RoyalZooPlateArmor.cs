@@ -13,7 +13,6 @@ namespace Server.Items
 		
             this.Attributes.Luck = 100;
             this.Attributes.DefendChance = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooPlateLegs(Serial serial)
@@ -103,7 +102,6 @@ namespace Server.Items
 		
             this.Attributes.Luck = 100;
             this.Attributes.DefendChance = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooPlateGloves(Serial serial)
@@ -193,7 +191,6 @@ namespace Server.Items
 		
             this.Attributes.Luck = 100;
             this.Attributes.DefendChance = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooPlateGorget(Serial serial)
@@ -283,7 +280,6 @@ namespace Server.Items
 		
             this.Attributes.Luck = 100;
             this.Attributes.DefendChance = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooPlateArms(Serial serial)
@@ -373,7 +369,6 @@ namespace Server.Items
 		
             this.Attributes.Luck = 100;
             this.Attributes.DefendChance = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooPlateChest(Serial serial)
@@ -463,7 +458,6 @@ namespace Server.Items
 		
             this.Attributes.Luck = 100;
             this.Attributes.DefendChance = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooPlateFemaleChest(Serial serial)
@@ -553,7 +547,6 @@ namespace Server.Items
 		
             this.Attributes.Luck = 100;
             this.Attributes.DefendChance = 10;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public RoyalZooPlateHelm(Serial serial)

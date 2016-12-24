@@ -509,9 +509,6 @@ namespace Server.Items
                         ApplyAttribute(secondary, min, max, AosArmorAttribute.DurabilityBonus, 10, 100, 10);
                         break;
                         /* End Shields */
-                    case 7:
-                        ApplyAttribute(secondary, min, max, AosArmorAttribute.MageArmor, 1, 1);
-                        break;
                     case 8:
                         ApplyAttribute(primary, min, max, AosAttribute.RegenHits, 1, 2);
                         break;

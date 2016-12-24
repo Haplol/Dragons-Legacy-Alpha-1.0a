@@ -12,7 +12,6 @@ namespace Server.Items
             this.Hue = 0x453;
 		
             this.Attributes.RegenMana = 2;
-            this.ArmorAttributes.MageArmor = 1;			
         }
 
         public MinaxsArmor(Serial serial)
@@ -102,7 +101,6 @@ namespace Server.Items
 		
             this.Attributes.RegenHits = 3;
             this.Attributes.NightSight = 1;
-            this.ArmorAttributes.MageArmor = 1;			
         }
 
         public KeeoneansChainMail(Serial serial)

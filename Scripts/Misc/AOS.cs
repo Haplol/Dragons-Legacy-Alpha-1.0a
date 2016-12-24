@@ -1925,7 +1925,6 @@ namespace Server
     {
         LowerStatReq = 0x00000001,
         SelfRepair = 0x00000002,
-        MageArmor = 0x00000004,
         DurabilityBonus = 0x00000008,
         #region Stygian Abyss
         ReactiveParalyze = 0x00000010,
@@ -2038,19 +2037,7 @@ namespace Server
             }
         }
 
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int MageArmor
-        {
-            get
-            {
-                return this[AosArmorAttribute.MageArmor];
-            }
-            set
-            {
-                this[AosArmorAttribute.MageArmor] = value;
-            }
-        }
-
+       
         [CommandProperty(AccessLevel.GameMaster)]
         public int DurabilityBonus
         {

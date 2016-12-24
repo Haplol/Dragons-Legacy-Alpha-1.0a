@@ -240,7 +240,7 @@ namespace Server.Misc
 
         private static double GetArmorMeditationValue(BaseArmor ar)
         {
-            if (ar == null || ar.ArmorAttributes.MageArmor != 0 || ar.Attributes.SpellChanneling != 0)
+            if (ar == null || ar.Attributes.SpellChanneling != 0)
                 return 0.0;
 
             switch ( ar.MeditationAllowance )

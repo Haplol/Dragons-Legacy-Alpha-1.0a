@@ -12,7 +12,6 @@ namespace Server.Items
             this.LootType = LootType.Blessed;
 
             this.ArmorAttributes.SelfRepair = 10;
-            this.ArmorAttributes.MageArmor = 1;
             this.ArmorAttributes.LowerStatReq = 100;
         }
 

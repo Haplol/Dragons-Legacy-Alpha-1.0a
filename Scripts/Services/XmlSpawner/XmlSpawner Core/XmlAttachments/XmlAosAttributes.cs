@@ -731,18 +731,7 @@ namespace Server.Engines.XmlSpawner2
                 this[AosArmorAttribute.SelfRepair] = value;
             }
         }
-        [CommandProperty(AccessLevel.GameMaster)]
-        public int MageArmor
-        {
-            get
-            {
-                return this[AosArmorAttribute.MageArmor];
-            }
-            set
-            {
-                this[AosArmorAttribute.MageArmor] = value;
-            }
-        }
+        
         [CommandProperty(AccessLevel.GameMaster)]
         public int DurabilityBonus
         {

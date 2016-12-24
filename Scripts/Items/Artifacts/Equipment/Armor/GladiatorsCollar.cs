@@ -13,7 +13,6 @@ namespace Server.Items
             this.Attributes.BonusHits = 10;
             this.Attributes.AttackChance = 10;
 
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public GladiatorsCollar(Serial serial)

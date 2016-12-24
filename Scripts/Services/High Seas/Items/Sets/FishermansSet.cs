@@ -85,7 +85,6 @@ namespace Server.Items
             Hue = 2578;
             SetHue = 2578;
 
-            ArmorAttributes.MageArmor = 1;
         }
 
         public FishermansTrousers(Serial serial)

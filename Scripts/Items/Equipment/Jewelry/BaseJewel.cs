@@ -1158,7 +1158,7 @@ namespace Server.Items
                 this.Hue = 0;
 
             //daat99 OWLTR start - runic jewels
-            if (Core.AOS && tool is BaseRunicTool && OWLTROptionsManager.IsEnabled(OWLTROptionsManager.OPTIONS_ENUM.RECIPE_CRAFT))
+            if (Core.AOS && tool is BaseRunicTool)
                 ((BaseRunicTool)tool).ApplyAttributesTo(this);
             //daat99 OWLTR end - reunic jewels
 

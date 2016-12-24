@@ -13,7 +13,6 @@ namespace Server.Items
             this.SetHue = 0x47E;
 			
             this.Attributes.RegenMana = 1;
-            this.ArmorAttributes.MageArmor = 1;
 			
             this.SetAttributes.BonusInt = 10;
             this.SetAttributes.SpellDamage = 15;

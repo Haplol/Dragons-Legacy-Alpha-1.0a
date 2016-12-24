@@ -15,7 +15,6 @@ namespace Server.Items
             this.Weight = 2.0;
             this.Attributes.RegenMana = 4;
             this.Attributes.CastRecovery = 3;
-            this.ArmorAttributes.MageArmor = 1;
             this.m_AosWeaponAttributes = new AosWeaponAttributes(this);
             this.m_AosWeaponAttributes.HitFireball = 15;
         }

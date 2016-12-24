@@ -11,7 +11,6 @@ namespace Server.Items
             this.Hue = 0x4F2;
             this.Attributes.CastRecovery = 3;
             this.Attributes.LowerManaCost = 8;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public InquisitorsResolution(Serial serial)

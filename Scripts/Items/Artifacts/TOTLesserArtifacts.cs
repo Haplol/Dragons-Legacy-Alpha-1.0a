@@ -96,7 +96,6 @@ namespace Server.Items
             : base()
         {
             this.ArmorAttributes.LowerStatReq = 100;
-            this.ArmorAttributes.MageArmor = 1;
             this.SkillBonuses.SetValues(0, SkillName.Parry, 10.0);
         }
 
@@ -351,7 +350,6 @@ namespace Server.Items
             : base()
         {
             this.ArmorAttributes.LowerStatReq = 100;
-            this.ArmorAttributes.MageArmor = 1;
             this.ArmorAttributes.SelfRepair = 3;
             this.Attributes.WeaponSpeed = 10;
         }
@@ -706,7 +704,6 @@ namespace Server.Items
 
             this.ArmorAttributes.SelfRepair = 3;
             this.ArmorAttributes.LowerStatReq = 100;
-            this.ArmorAttributes.MageArmor = 1;
         }
 
         public LegsOfStability(Serial serial)
